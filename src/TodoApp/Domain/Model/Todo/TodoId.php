@@ -11,11 +11,11 @@ final class TodoId implements IdentifiesAggregate
     /**
      * @var UuidInterface
      */
-    private $uuid;
+    private $id;
 
-    private function __construct(UuidInterface $uuid)
+    private function __construct(UuidInterface $id)
     {
-        $this->uuid = $uuid;
+        $this->id = $id;
     }
 
     public static function generate(): IdentifiesAggregate
@@ -30,11 +30,11 @@ final class TodoId implements IdentifiesAggregate
 
     public function __toString(): string
     {
-        return (string) $this->uuid;
+        return (string) $this->id;
     }
 
     public function equals(IdentifiesAggregate $other): bool
     {
-        return $other instanceof TodoId && $this->uuid === $other->uuid;
+        return $other instanceof TodoId && $this->id === $other->id;
     }
 }

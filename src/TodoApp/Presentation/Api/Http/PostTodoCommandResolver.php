@@ -22,8 +22,8 @@ class PostTodoCommandResolver implements ArgumentValueResolverInterface
     {
         $id = TodoId::fromString($request->request->get('todoId'));
         $text = TodoText::fromString($request->request->get('text'));
-        $status = TodoStatus::byValue($request->request->get('status'));
-        $date = TodoDate::fromString($request->request->get('status'));
+        $status = new TodoStatus($request->request->get('status'));
+        $date = TodoDate::fromString($request->request->get('date'));
 
         yield new PostTodo(
             $id,

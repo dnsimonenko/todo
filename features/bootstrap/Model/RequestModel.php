@@ -1,0 +1,320 @@
+<?php declare(strict_types=1);
+
+namespace App\Behat\Model;
+
+use App\Behat\Storage;
+//use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PropertyAccess\PropertyAccess;
+
+class RequestModel
+{
+    /** @var string */
+    private $host = 'localhost';
+
+    /** @var string */
+    private $scheme = 'http';
+
+    /** @var string */
+    private $url;
+
+    /** @var string */
+    private $method;
+
+    /** @var array */
+    private $parameters = [];
+
+//    /** @var array */
+//    private $cookies = [];
+
+    /** @var array */
+    private $files = [];
+
+    /** @var array */
+    private $headers = [];
+
+    /** @var string */
+    private $content;
+
+    /** @var Request */
+    private $lastRequest;
+
+    /**
+     * @return string
+     */
+    public function getHost(): ?string
+    {
+        return $this->host;
+    }
+
+    /**
+     * @param string $host
+     *
+     * @return RequestModel
+     */
+    public function setHost(string $host): self
+    {
+        $this->host = $host;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getScheme(): ?string
+    {
+        return $this->scheme;
+    }
+
+    /**
+     * @param string $scheme
+     *
+     * @return RequestModel
+     */
+    public function setScheme(string $scheme): self
+    {
+        $this->scheme = $scheme;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUrl(): ?string
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     *
+     * @return RequestModel
+     */
+    public function setUrl(string $url): self
+    {
+        $this->url = $url;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMethod(): ?string
+    {
+        return $this->method;
+    }
+
+    /**
+     * @param string $method
+     *
+     * @return RequestModel
+     */
+    public function setMethod(string $method): self
+    {
+        $this->method = $method;
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getParameters(): ?array
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @param array $parameters
+     *
+     * @return RequestModel
+     */
+    public function setParameters(array $parameters): self
+    {
+        $this->parameters = Storage::replaceVariablesRecursive($parameters);
+
+        return $this;
+    }
+
+//    /**
+//     * @return array
+//     */
+//    public function getCookies(): array
+//    {
+//        return $this->cookies;
+//    }
+//
+//    /**
+//     * @param string $key
+//     * @param $value
+//     *
+//     * @return RequestModel
+//     */
+//    public function setCookie(string $key, $value): self
+//    {
+//        $this->cookies[$key] = $value;
+//
+//        return $this;
+//    }
+//
+//    /**
+//     * @param Response $response
+//     */
+//    public function populateCookiesFromResponse(Response $response): void
+//    {
+//        /** @var Cookie $cookie */
+//        foreach ($response->headers->getCookies() as $cookie) {
+//            if ($cookie->getExpiresTime()!== 0 && $cookie->getExpiresTime() < time() + 10) {
+//                $this->removeCookie($cookie->getName());
+//            } else {
+//                $this->setCookie($cookie->getName(), $cookie->getValue());
+//            }
+//        }
+//    }
+//
+//    /**
+//     * @param string $key
+//     *
+//     * @return RequestModel
+//     */
+//    public function removeCookie(string $key): self
+//    {
+//        unset($this->cookies[$key]);
+//
+//        return $this;
+//    }
+
+    /**
+     * @return array
+     */
+    public function getFiles(): array
+    {
+        return $this->files;
+    }
+
+    /**
+     * @param string       $keyPath
+     * @param UploadedFile $file
+     *
+     * @return RequestModel
+     */
+    public function setFile(string $keyPath, UploadedFile $file): self
+    {
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        $keyPath = preg_replace("/^(\w+)(\[|$)/", '[$1]$2', $keyPath, 1);
+
+        $accessor->setValue($this->files, $keyPath, $file);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
+    }
+
+    public function hasHeader(string $key): bool
+    {
+        return array_key_exists($key, $this->headers);
+    }
+
+    public function setHeader(string $key, $value): self
+    {
+        if ($this->hasHeader($key)) {
+            $this->headers[$key] = $value;
+
+            if (!is_array($this->headers[$key])) {
+                $this->headers[$key] = [$this->headers[$key]];
+            }
+
+            $this->headers[$key][] = $value;
+        } else {
+            $this->headers[$key] = $value;
+        }
+
+        return $this;
+    }
+
+    public function removeHeader(string $key): self
+    {
+        unset($this->headers[$key]);
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContent(): ?string
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     *
+     * @return RequestModel
+     */
+    public function setContent(string $content): self
+    {
+        $this->content = Storage::replaceVariables($content);
+
+        return $this;
+    }
+
+    /**
+     * @return Request
+     */
+    public function getLastRequest(): Request
+    {
+        if (!$this->lastRequest) {
+            throw new \RuntimeException('Request not created');
+        }
+
+        return $this->lastRequest;
+    }
+
+    /**
+     * @return string
+     */
+    private function getPreparedUrl(): string
+    {
+        $path = $this->getUrl();
+
+        if (parse_url($path, PHP_URL_HOST)) {
+            return $path;
+        }
+
+        return sprintf('%s://%s%s', $this->getScheme(), $this->getHost(), $path);
+    }
+
+    /**
+     * @return Request
+     */
+    public function createRequest(): Request
+    {
+        $this->lastRequest = Request::create(
+            $this->getPreparedUrl(),
+            $this->getMethod(),
+            $this->getParameters(),
+            // Cookies here
+            [],
+            $this->getFiles(),
+            [],
+            $this->getContent()
+        );
+
+        $this->lastRequest->headers->add($this->getHeaders());
+
+        return $this->lastRequest;
+    }
+}

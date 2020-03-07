@@ -18,4 +18,9 @@ final class TodoText
     {
         return new self($text);
     }
+
+    public function __toString(): string
+    {
+        return (string) $this->text;
+    }
 }

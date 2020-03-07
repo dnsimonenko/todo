@@ -1,0 +1,16 @@
+jms_serializer:
+  visitors:
+    xml_serialization:
+      format_output: '%kernel.debug%'
+  metadata:
+    auto_detection: false
+    directories:
+      todo_events:
+        namespace_prefix: "TodoApp\\Domain\\Model\\Todo\\Event"
+        path: '%kernel.project_dir%/config/mapping/serializer/TodoApp/Domain/Model/Todo/Event'
+      todo_models:
+        namespace_prefix: "TodoApp\\Domain\\Model\\Todo"
+        path: '%kernel.project_dir%/config/mapping/serializer/TodoApp/Domain/Model/Todo'
+      todo_base:
+        namespace_prefix: "TodoApp\\Domain\\Model"
+        path: '%kernel.project_dir%/config/mapping/serializer/TodoApp/Domain/Model'

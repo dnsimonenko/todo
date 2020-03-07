@@ -2,8 +2,8 @@
 
 namespace TodoApp\Domain\Model;
 
-use MabeEnum\Enum as MabeEnum;
+use MyCLabs\Enum\Enum as BaseEnum;
 
-abstract class Enum extends MabeEnum
+abstract class Enum extends BaseEnum
 {
 }

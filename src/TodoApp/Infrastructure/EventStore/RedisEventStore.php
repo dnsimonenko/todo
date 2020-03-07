@@ -2,10 +2,8 @@
 
 namespace TodoApp\Infrastructure\EventStore;
 
-use Predis\Client;
+use JMS\Serializer\SerializerInterface;
 use Predis\ClientInterface;
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\SerializerInterface;
 use TodoApp\Domain\Model\AggregateHistory;
 use TodoApp\Domain\Model\DomainEvents;
 use TodoApp\Domain\Model\IdentifiesAggregate;

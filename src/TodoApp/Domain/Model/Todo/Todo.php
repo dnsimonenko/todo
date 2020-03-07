@@ -28,9 +28,21 @@ final class Todo implements RecordsEvents, IsEventSourced
     /** @var TodoDate */
     private $date;
 
+    public function __construct(
+        TodoId $todoId,
+        TodoText $text,
+        TodoStatus $status,
+        TodoDate $date
+    ) {
+        $this->todoId = $todoId;
+        $this->text = $text;
+        $this->status = $status;
+        $this->date = $date;
+    }
+
     public static function post(TodoId $todoId, TodoText $text, TodoStatus $status, TodoDate $date): Todo
     {
-        $self = new self();
+        $self = new self($todoId, $text, $status, $date);
 
         $self->recordThat(new TodoPosted($todoId, $text, $status, $date));
 

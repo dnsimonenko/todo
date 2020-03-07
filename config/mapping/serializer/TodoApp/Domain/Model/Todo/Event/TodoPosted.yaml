@@ -1,0 +1,11 @@
+TodoApp\Domain\Model\Todo\Event\TodoPosted:
+  exclusion_policy: ALL
+  properties:
+    todoId:
+      type: TodoApp\Domain\Model\Todo\TodoId
+    text:
+      type: TodoApp\Domain\Model\Todo\TodoText
+    status:
+      type: enum
+    date:
+      type: TodoApp\Domain\Model\Todo\TodoDate

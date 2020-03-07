@@ -1,0 +1,5 @@
+TodoApp\Domain\Model\Todo\TodoDate:
+  exclusion_policy: ALL
+  properties:
+    date:
+      type: DateTimeImmutable

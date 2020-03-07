@@ -1,4 +1,6 @@
 COMPOSE_FILES := -f docker-compose.yml
+OS := $(shell uname)
+NETWORK := $(shell docker network ls | grep todo)
 
 start: up
 .PHONY: start
@@ -7,6 +9,11 @@ stop: kill
 .PHONY: stop
 
 up:
+
+ifeq ($(NETWORK),)
+	docker network create todo
+endif
+
 	docker-compose $(COMPOSE_FILES) up -d
 .PHONY: up
 

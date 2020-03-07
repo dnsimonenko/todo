@@ -1,0 +1,5 @@
+TodoApp\Domain\Model\Todo\TodoId:
+  exclusion_policy: ALL
+  properties:
+    id:
+      type: string

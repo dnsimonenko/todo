@@ -1,0 +1,5 @@
+TodoApp\Domain\Model\Todo\TodoText:
+  exclusion_policy: ALL
+  properties:
+    text:
+      type: string
