@@ -87,7 +87,10 @@ class RedisTodoProjection implements TodoProjection
 
     public function projectTodoClosed(TodoClosed $event): void
     {
-        $this->predis->del($this->computeHashFor($event->getAggregateId()));
+        $hash = $this->computeHashFor($event->getAggregateId());
+
+        $this->predis->del([$hash]);
+        $this->predis->lrem('todo', 1, $hash);
     }
 
     protected function determineProjectHandlerMethodFor(DomainEvent $event): string

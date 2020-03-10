@@ -50,7 +50,7 @@ Feature:
     }
     """
 
-  Scenario: List all tasks for a given day
+  Scenario: List all tasks
     When I send a GET request to "/api/todo"
     Then the response code should be 200
     And the response should contain json:
@@ -69,10 +69,17 @@ Feature:
     When I send a "DELETE" request to "/api/todo/72c87ace-b6d7-41f5-a1e1-1abdece44369"
     Then the response code should be 204
 
+  Scenario: Empty list on get all
+    When I send a GET request to "/api/todo"
+    Then the response code should be 200
+    And the response should contain json:
+    """
+    [
+    ]
+    """
+
 #  Scenario: 404 on deleted task
 #    When I send a GET request to "/api/todo/72c87ace-b6d7-41f5-a1e1-1abdece44369"
 #    Then the response code should be 404
 #
-#  Scenario: Empty list on get all
-#    When I send a GET request to "/api/todo"
-#    Then the response code should be 200
+
