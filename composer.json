@@ -33,14 +33,15 @@
         "jms/serializer-bundle": "^3.5",
         "symfony/twig-bundle": "4.4.*",
         "symfony/serializer": "4.4.*",
-        "myclabs/php-enum": "^1.7",
-        "symfony/process": "4.4.*"
+        "myclabs/php-enum": "^1.7"
     },
     "require-dev": {
         "phpunit/phpunit": "@stable",
         "behat/behat": "^3.6",
         "behat/symfony2-extension": "^2.1",
-        "symfony/expression-language": "4.4.*"
+        "symfony/expression-language": "4.4.*",
+        "symfony/process": "4.4.*",
+        "symfony/property-access": "4.4.*"
     },
     "config": {
         "bin-dir": "bin"

@@ -2,7 +2,9 @@ default:
     suites:
         default:
             contexts:
-                - App\Behat\ApiContext
+                - App\Behat\Context\ApiContext
+                - App\Behat\Context\RedisContext
+                - App\Behat\Context\JsonContext
     extensions:
         Behat\Symfony2Extension:
             kernel:

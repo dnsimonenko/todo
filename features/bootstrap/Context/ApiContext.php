@@ -1,83 +1,30 @@
 <?php declare(strict_types=1);
 
-namespace App\Behat;
+namespace App\Behat\Context;
 
 use App\Behat\Model\RequestModel;
 use App\Behat\Storage;
 use Behat\Gherkin\Node\PyStringNode;
-use Behat\Gherkin\Node\TableNode;
 use Behat\Symfony2Extension\Context\KernelAwareContext;
+use App\Behat\Traits\PlaceholderTrait;
 use Exception;
 use PHPUnit\Framework\Assert as Assertions;
 use PHPUnit\Framework\ExpectationFailedException;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Process\Process;
 
 class ApiContext implements KernelAwareContext
 {
-    /** @var array */
-    protected $placeholders = [];
+    use PlaceholderTrait;
 
     /** @var KernelInterface */
     protected $kernel;
-
-    /** @var array */
-    protected $headers = [];
 
     /** @var RequestModel */
     protected $request;
 
     /** @var HttpResponse */
     protected $response;
-
-    /**
-     * @BeforeSuite
-     */
-    public static function flushRedis()
-    {
-        $process = new Process(
-            [
-                'php',
-                'bin/console',
-                'redis:flushall',
-                '--env=test',
-                '--no-interaction',
-            ]
-        );
-
-        $process->run();
-    }
-
-    /**
-     * Sets placeholder for replacement.
-     *
-     * you can specify placeholders, which will
-     * be replaced in URL, request or response body.
-     *
-     * @param string $key token name
-     * @param string $value replace value
-     */
-    protected function setPlaceholder(string $key, string $value)
-    {
-        $this->placeholders[$key] = $value;
-    }
-
-    /**
-     * Replaces placeholders in provided text.
-     *
-     * @param string $string
-     *
-     * @return string
-     */
-    protected function replacePlaceholder(string $string): string
-    {
-        foreach ($this->placeholders as $key => $val) {
-            $string = str_replace($key, $val, $string);
-        }
-
-        return $string;
-    }
 
     /**
      * @param KernelInterface $kernel
@@ -134,34 +81,6 @@ class ApiContext implements KernelAwareContext
     }
 
     /**
-     * @Given /^request is sent$/
-     */
-    public function requestIsSent()
-    {
-        $this->sendRequest();
-    }
-
-    /**
-     * @Given /^request uri path (?:is|should be) "([^"]+)"$/
-     *
-     * @param string $uri
-     */
-    public function requestUriPathIs(string $uri): void
-    {
-        $this->request->setUrl($this->prepareUrl($uri));
-    }
-
-    /**
-     * @Given /^request method is "(GET|HEAD|POST|PUT|DELETE|OPTIONS|PATCH)"$/
-     *
-     * @param string $method
-     */
-    public function requestMethodIs(string $method): void
-    {
-        $this->request->setMethod($method);
-    }
-
-    /**
      * @Given /^request body contains the following json:$/
      *
      * @param PyStringNode $json
@@ -170,17 +89,6 @@ class ApiContext implements KernelAwareContext
     {
         $json = Storage::replaceVariables($json->getRaw());
         $this->request->setContent($json);
-    }
-
-    /**
-     * @Given /^"([^"]+)" header (?:is|should be) set to "([^"]*)"$/
-     *
-     * @param string $name
-     * @param string $value
-     */
-    public function headerIsSetTo(string $name, string $value): void
-    {
-        $this->request->setHeader($name, $value);
     }
 
     /**
@@ -217,9 +125,10 @@ class ApiContext implements KernelAwareContext
         $this->response = $this->kernel->handle($this->request->createRequest());
         ob_end_clean();
 
+        $this->request->populateCookiesFromResponse($this->response);
+
         //Set the data from the response to the storage
-        Storage::setData($this->response->getContent() ? $this->retrieveData() : []);
-        Storage::set('response', $this->response);
+        Storage::set('response', $this->response->getContent() ? $this->retrieveData() : []);
     }
 
     /**

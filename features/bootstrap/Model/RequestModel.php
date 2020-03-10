@@ -4,6 +4,7 @@ namespace App\Behat\Model;
 
 use App\Behat\Storage;
 //use Symfony\Component\BrowserKit\Cookie;
+use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,8 +27,8 @@ class RequestModel
     /** @var array */
     private $parameters = [];
 
-//    /** @var array */
-//    private $cookies = [];
+    /** @var array */
+    private $cookies = [];
 
     /** @var array */
     private $files = [];
@@ -141,53 +142,53 @@ class RequestModel
         return $this;
     }
 
-//    /**
-//     * @return array
-//     */
-//    public function getCookies(): array
-//    {
-//        return $this->cookies;
-//    }
-//
-//    /**
-//     * @param string $key
-//     * @param $value
-//     *
-//     * @return RequestModel
-//     */
-//    public function setCookie(string $key, $value): self
-//    {
-//        $this->cookies[$key] = $value;
-//
-//        return $this;
-//    }
-//
-//    /**
-//     * @param Response $response
-//     */
-//    public function populateCookiesFromResponse(Response $response): void
-//    {
-//        /** @var Cookie $cookie */
-//        foreach ($response->headers->getCookies() as $cookie) {
-//            if ($cookie->getExpiresTime()!== 0 && $cookie->getExpiresTime() < time() + 10) {
-//                $this->removeCookie($cookie->getName());
-//            } else {
-//                $this->setCookie($cookie->getName(), $cookie->getValue());
-//            }
-//        }
-//    }
-//
-//    /**
-//     * @param string $key
-//     *
-//     * @return RequestModel
-//     */
-//    public function removeCookie(string $key): self
-//    {
-//        unset($this->cookies[$key]);
-//
-//        return $this;
-//    }
+    /**
+     * @return array
+     */
+    public function getCookies(): array
+    {
+        return $this->cookies;
+    }
+
+    /**
+     * @param string $key
+     * @param $value
+     *
+     * @return RequestModel
+     */
+    public function setCookie(string $key, $value): self
+    {
+        $this->cookies[$key] = $value;
+
+        return $this;
+    }
+
+    /**
+     * @param Response $response
+     */
+    public function populateCookiesFromResponse(Response $response): void
+    {
+        /** @var Cookie $cookie */
+        foreach ($response->headers->getCookies() as $cookie) {
+            if ($cookie->getExpiresTime()!== 0 && $cookie->getExpiresTime() < time() + 10) {
+                $this->removeCookie($cookie->getName());
+            } else {
+                $this->setCookie($cookie->getName(), $cookie->getValue());
+            }
+        }
+    }
+
+    /**
+     * @param string $key
+     *
+     * @return RequestModel
+     */
+    public function removeCookie(string $key): self
+    {
+        unset($this->cookies[$key]);
+
+        return $this;
+    }
 
     /**
      * @return array
@@ -306,8 +307,7 @@ class RequestModel
             $this->getPreparedUrl(),
             $this->getMethod(),
             $this->getParameters(),
-            // Cookies here
-            [],
+            $this->getCookies(),
             $this->getFiles(),
             [],
             $this->getContent()

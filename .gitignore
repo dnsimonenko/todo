@@ -72,3 +72,6 @@ behat.yml
 /phpunit.xml
 .phpunit.result.cache
 ###< phpunit/phpunit ###
+
+.idea
+.DS_Store
