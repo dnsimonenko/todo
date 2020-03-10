@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace TodoApp\Application\Command;
+namespace TodoApp\Domain\Model\Todo\Command;
 
 use TodoApp\Domain\Model\Todo\TodoDate;
 use TodoApp\Domain\Model\Todo\TodoId;

@@ -21,3 +21,15 @@ Feature:
     }
     """
     Then the response code should be 201
+
+  Scenario: Complete a task
+    When I send a PATCH request to "/api/todo/72c87ace-b6d7-41f5-a1e1-1abdece44369/status-completed"
+    Then the response code should be 204
+
+  Scenario: Reopen a task
+    When I send a PATCH request to "/api/todo/72c87ace-b6d7-41f5-a1e1-1abdece44369/status-open"
+    Then the response code should be 204
+
+  Scenario: Delete a task
+    When I send a "DELETE" request to "/api/todo/72c87ace-b6d7-41f5-a1e1-1abdece44369"
+    Then the response code should be 204

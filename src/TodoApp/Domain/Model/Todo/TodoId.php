@@ -35,6 +35,6 @@ final class TodoId implements IdentifiesAggregate
 
     public function equals(IdentifiesAggregate $other): bool
     {
-        return $other instanceof TodoId && $this->id === $other->id;
+        return $other instanceof TodoId && $this->id->equals($other->id);
     }
 }

@@ -12,15 +12,24 @@ final class TodoMarkedAsDone implements DomainEvent
     /** @var TodoId */
     private $todoId;
 
-    /** @var TodoStatus */
-    private $status;
+    /**
+     * @var TodoStatus
+     */
+    private $oldStatus;
+
+    /**
+     * @var TodoStatus
+     */
+    private $newStatus;
 
     public function __construct(
         TodoId $todoId,
-        TodoStatus $status
+        TodoStatus $oldStatus,
+        TodoStatus $newStatus
     ) {
         $this->todoId = $todoId;
-        $this->status = $status;
+        $this->oldStatus = $oldStatus;
+        $this->newStatus = $newStatus;
     }
 
     public function getAggregateId(): IdentifiesAggregate
@@ -33,8 +42,13 @@ final class TodoMarkedAsDone implements DomainEvent
         return $this->todoId;
     }
 
-    public function status(): TodoStatus
+    public function oldStatus(): TodoStatus
     {
-        return $this->status;
+        return $this->oldStatus;
+    }
+
+    public function newStatus(): TodoStatus
+    {
+        return $this->newStatus;
     }
 }

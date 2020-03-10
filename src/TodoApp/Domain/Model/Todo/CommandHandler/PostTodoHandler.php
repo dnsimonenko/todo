@@ -1,19 +1,19 @@
 <?php declare(strict_types=1);
 
-namespace TodoApp\Application\CommandHandler;
+namespace TodoApp\Domain\Model\Todo\CommandHandler;
 
-use TodoApp\Application\Command\PostTodo;
+use TodoApp\Domain\Model\Todo\Command\PostTodo;
 use TodoApp\Domain\Model\Todo\Todo;
 use TodoApp\Domain\Model\Todo\TodoRepository;
 
 class PostTodoHandler
 {
     /** @var TodoRepository */
-    private $postRepository;
+    private $todoRepository;
 
-    public function __construct(TodoRepository $postRepository)
+    public function __construct(TodoRepository $todoRepository)
     {
-        $this->postRepository = $postRepository;
+        $this->todoRepository = $todoRepository;
     }
 
     public function __invoke(PostTodo $command): void
@@ -25,6 +25,6 @@ class PostTodoHandler
             $command->date()
         );
 
-        $this->postRepository->save($todo);
+        $this->todoRepository->save($todo);
     }
 }

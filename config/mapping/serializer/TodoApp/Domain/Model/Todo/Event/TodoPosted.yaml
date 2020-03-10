@@ -6,6 +6,6 @@ TodoApp\Domain\Model\Todo\Event\TodoPosted:
     text:
       type: TodoApp\Domain\Model\Todo\TodoText
     status:
-      type: enum
+      type: TodoStatus
     date:
       type: TodoApp\Domain\Model\Todo\TodoDate

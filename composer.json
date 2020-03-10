@@ -30,11 +30,11 @@
         "buttercup/protects": "dev-master",
         "predis/predis": "^1.1",
         "snc/redis-bundle": "^3.2",
-        "friendsofsymfony/rest-bundle": "^2.7",
         "jms/serializer-bundle": "^3.5",
         "symfony/twig-bundle": "4.4.*",
         "symfony/serializer": "4.4.*",
-        "myclabs/php-enum": "^1.7"
+        "myclabs/php-enum": "^1.7",
+        "symfony/process": "4.4.*"
     },
     "require-dev": {
         "phpunit/phpunit": "@stable",

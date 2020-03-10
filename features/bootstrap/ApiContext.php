@@ -12,6 +12,7 @@ use PHPUnit\Framework\Assert as Assertions;
 use PHPUnit\Framework\ExpectationFailedException;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Process\Process;
 
 class ApiContext implements KernelAwareContext
 {
@@ -31,7 +32,25 @@ class ApiContext implements KernelAwareContext
     protected $response;
 
     /**
-     * Sets place holder for replacement.
+     * @BeforeSuite
+     */
+    public static function flushRedis()
+    {
+        $process = new Process(
+            [
+                'php',
+                'bin/console',
+                'redis:flushall',
+                '--env=test',
+                '--no-interaction',
+            ]
+        );
+
+        $process->run();
+    }
+
+    /**
+     * Sets placeholder for replacement.
      *
      * you can specify placeholders, which will
      * be replaced in URL, request or response body.
@@ -99,20 +118,6 @@ class ApiContext implements KernelAwareContext
         $this->request->setContent(json_encode($fields));
 
         $this->sendRequest();
-    }
-
-    /**
-     * Sends HTTP request to specific URL with raw body from PyString.
-     *
-     * @param string $method request method
-     * @param string $url relative url
-     * @param PyStringNode $string request body
-     *
-     * @When /^(?:I )?send a ([A-Z]+) request to "([^"]+)" with body and signature:$/
-     */
-    public function iSendARequestWithBodyAndSignature(string $method, string $url, PyStringNode $string)
-    {
-        $this->iSendARequestWithBody($method, $url, $string);
     }
 
     /**

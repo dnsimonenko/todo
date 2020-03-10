@@ -1,0 +1,9 @@
+TodoApp\Domain\Model\Todo\Event\TodoReopened:
+  exclusion_policy: ALL
+  properties:
+    todoId:
+      type: TodoApp\Domain\Model\Todo\TodoId
+    oldStatus:
+      type: TodoStatus
+    newStatus:
+      type: TodoStatus

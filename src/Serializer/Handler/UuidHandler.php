@@ -6,10 +6,12 @@ use JMS\Serializer\Context;
 use JMS\Serializer\GraphNavigator;
 use JMS\Serializer\Handler\SubscribingHandlerInterface;
 use JMS\Serializer\VisitorInterface;
+use Ramsey\Uuid\Uuid;
+use Ramsey\Uuid\UuidInterface;
 use TodoApp\Domain\Model\Enum;
 use TodoApp\Domain\Model\Todo\TodoStatus;
 
-class EnumHandler implements SubscribingHandlerInterface
+class UuidHandler implements SubscribingHandlerInterface
 {
     /**
      * @return array
@@ -20,29 +22,29 @@ class EnumHandler implements SubscribingHandlerInterface
 
         foreach (['json', 'xml', 'yml'] as $format) {
             $methods[] = [
-                'type' => 'TodoStatus',
+                'type' => 'uuid',
                 'format' => $format,
                 'direction' => GraphNavigator::DIRECTION_SERIALIZATION,
-                'method' => 'serializeTodoStatus',
+                'method' => 'serializeUuid',
             ];
             $methods[] = [
-                'type' => 'TodoStatus',
+                'type' => 'uuid',
                 'direction' => GraphNavigator::DIRECTION_DESERIALIZATION,
                 'format' => $format,
-                'method' => 'deserializeTodoStatus',
+                'method' => 'deserializeUuid',
             ];
         }
 
         return $methods;
     }
 
-    public function serializeTodoStatus(VisitorInterface $visitor, TodoStatus $status, array $type, Context $context): string
+    public function serializeUuid(VisitorInterface $visitor, UuidInterface $uuid, array $type, Context $context): string
     {
-        return $status->getValue();
+        return (string) $uuid;
     }
 
-    public function deserializeTodoStatus(VisitorInterface $visitor, $value, array $type): Enum
+    public function deserializeUuid(VisitorInterface $visitor, $value, array $type): UuidInterface
     {
-        return new TodoStatus($value);
+        return Uuid::fromString($value);
     }
 }

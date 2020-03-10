@@ -59,8 +59,8 @@ class RedisEventStore implements EventStore
         return new AggregateHistory($id, $eventStream);
     }
 
-    private function computeHashFor(IdentifiesAggregate $anAggregateId)
+    private function computeHashFor(IdentifiesAggregate $aggregateId)
     {
-        return sprintf('events:%s', $anAggregateId);
+        return sprintf('events:%s', $aggregateId);
     }
 }

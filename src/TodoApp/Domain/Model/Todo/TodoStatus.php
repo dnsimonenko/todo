@@ -7,13 +7,11 @@ use TodoApp\Domain\Model\Enum;
 /**
  * @method static TodoStatus OPEN()
  * @method static TodoStatus DONE()
- * @method static TodoStatus EXPIRED()
- * @method static TodoStatus CANCELED()
+ * @method static TodoStatus CLOSED()
  */
 final class TodoStatus extends Enum
 {
     public const OPEN = 'open';
     public const DONE = 'done';
-    public const EXPIRED = 'expired';
-    public const CANCELED = 'canceled';
+    public const CLOSED = 'closed';
 }

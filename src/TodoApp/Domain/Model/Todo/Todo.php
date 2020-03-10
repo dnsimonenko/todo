@@ -2,20 +2,18 @@
 
 namespace TodoApp\Domain\Model\Todo;
 
-use TodoApp\Domain\Model\AggregateHistory;
+use TodoApp\Domain\Model\AggregateRoot;
 use TodoApp\Domain\Model\DomainEvent;
-use TodoApp\Domain\Model\DomainEvents;
-use TodoApp\Domain\Model\IsEventSourced;
-use TodoApp\Domain\Model\RecordsEvents;
+use TodoApp\Domain\Model\Todo\Event\TodoClosed;
+use TodoApp\Domain\Model\Todo\Event\TodoMarkedAsDone;
 use TodoApp\Domain\Model\Todo\Event\TodoPosted;
+use TodoApp\Domain\Model\Todo\Event\TodoReopened;
+use TodoApp\Domain\Model\Todo\Exception\TodoAlreadyClosed;
+use TodoApp\Domain\Model\Todo\Exception\TodoNotDone;
+use TodoApp\Domain\Model\Todo\Exception\TodoNotOpen;
 
-final class Todo implements RecordsEvents, IsEventSourced
+final class Todo extends AggregateRoot
 {
-    /**
-     * @var DomainEvent[]
-     */
-    private $recordedEvents = [];
-
     /** @var TodoId */
     private $todoId;
 
@@ -28,50 +26,54 @@ final class Todo implements RecordsEvents, IsEventSourced
     /** @var TodoDate */
     private $date;
 
-    public function __construct(
-        TodoId $todoId,
-        TodoText $text,
-        TodoStatus $status,
-        TodoDate $date
-    ) {
-        $this->todoId = $todoId;
-        $this->text = $text;
-        $this->status = $status;
-        $this->date = $date;
+    private function __construct()
+    {
     }
 
     public static function post(TodoId $todoId, TodoText $text, TodoStatus $status, TodoDate $date): Todo
     {
-        $self = new self($todoId, $text, $status, $date);
+        $self = new self();
+        $self->todoId = $todoId;
+        $self->text = $text;
+        $self->status = $status;
+        $self->date = $date;
 
         $self->recordThat(new TodoPosted($todoId, $text, $status, $date));
 
         return $self;
     }
 
-    public function getRecordedEvents(): DomainEvents
+    public function markAsDone(): void
     {
-        return new DomainEvents($this->recordedEvents);
-    }
+        $status = TodoStatus::DONE();
 
-    private function recordThat(DomainEvent $event)
-    {
-        $this->recordedEvents[] = $event;
-    }
-
-    public function clearRecordedEvents(): void
-    {
-        $this->recordedEvents = [];
-    }
-
-    public static function reconstituteFrom(AggregateHistory $aggregateHistory)
-    {
-        $instance = new static();
-        foreach ($aggregateHistory as $event) {
-            $instance->apply($event);
+        if (!$this->status->equals(TodoStatus::OPEN())) {
+            throw new TodoNotOpen();
         }
 
-        return $instance;
+        $this->applyAndRecordThat(new TodoMarkedAsDone($this->todoId, $this->status, $status));
+    }
+
+    public function reopenTodo(): void
+    {
+        $status = TodoStatus::OPEN();
+
+        if (!$this->status->equals(TodoStatus::DONE())) {
+            throw new TodoNotDone();
+        }
+
+        $this->applyAndRecordThat(new TodoReopened($this->todoId, $this->status, $status));
+    }
+
+    public function closeTodo(): void
+    {
+        $status = TodoStatus::CLOSED();
+
+        if ($this->status->equals(TodoStatus::CLOSED())) {
+            throw new TodoAlreadyClosed();
+        }
+
+        $this->applyAndRecordThat(new TodoClosed($this->todoId, $this->status, $status));
     }
 
     protected function apply(DomainEvent $event): void
@@ -91,16 +93,26 @@ final class Todo implements RecordsEvents, IsEventSourced
         $this->{$handler}($event);
     }
 
-    protected function determineEventHandlerMethodFor(DomainEvent $event): string
-    {
-        return 'apply' . \implode(\array_slice(\explode('\\', \get_class($event)), -1));
-    }
-
     private function applyTodoPosted(TodoPosted $event): void
     {
         $this->todoId = $event->todoId();
         $this->text = $event->text();
         $this->status = $event->status();
         $this->date = $event->date();
+    }
+
+    private function applyTodoMarkedAsDone(TodoMarkedAsDone $event): void
+    {
+        $this->status = $event->newStatus();
+    }
+
+    private function applyTodoReopened(TodoReopened $event): void
+    {
+        $this->status = $event->newStatus();
+    }
+
+    private function applyTodoClosed(TodoClosed $event): void
+    {
+        $this->status = $event->newStatus();
     }
 }

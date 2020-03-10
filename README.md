@@ -26,6 +26,6 @@ CancelTodo
 # Exceptions
 
 TodoNotFound
-TodoAlreadyOpen
-TodoAlreadyDone
+TodoNotOpen
+TodoNotDone
 TodoAlreadyCanceled
