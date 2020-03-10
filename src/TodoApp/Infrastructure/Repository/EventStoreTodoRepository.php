@@ -2,9 +2,9 @@
 
 namespace TodoApp\Infrastructure\Repository;
 
-use CQRSBlog\BlogEngine\DomainModel\TodoProjection;
 use TodoApp\Domain\Model\Todo\Todo;
 use TodoApp\Domain\Model\Todo\TodoId;
+use TodoApp\Domain\Model\Todo\TodoProjection;
 use TodoApp\Domain\Model\Todo\TodoRepository;
 use TodoApp\Infrastructure\EventStore\EventStore;
 

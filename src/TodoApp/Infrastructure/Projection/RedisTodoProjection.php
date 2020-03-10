@@ -2,7 +2,6 @@
 
 namespace TodoApp\Infrastructure\Projection;
 
-use CQRSBlog\BlogEngine\DomainModel\TodoProjection;
 use JMS\Serializer\SerializerInterface;
 use Predis\ClientInterface;
 use TodoApp\Domain\Model\DomainEvent;
@@ -11,6 +10,7 @@ use TodoApp\Domain\Model\Todo\Event\TodoClosed;
 use TodoApp\Domain\Model\Todo\Event\TodoMarkedAsDone;
 use TodoApp\Domain\Model\Todo\Event\TodoPosted;
 use TodoApp\Domain\Model\Todo\Event\TodoReopened;
+use TodoApp\Domain\Model\Todo\TodoProjection;
 
 class RedisTodoProjection implements TodoProjection
 {
@@ -50,17 +50,17 @@ class RedisTodoProjection implements TodoProjection
 
     public function projectTodoPosted(TodoPosted $event): void
     {
-        $anAggregateId = $event->getAggregateId();
+        $aggregateId = $event->getAggregateId();
 
-        $hash = $this->computeHashFor($anAggregateId);
+        $hash = $this->computeHashFor($aggregateId);
 
         $this->predis->hmset(
             $hash,
             [
-                'todoId' => $event->todoId(),
-                'text' => $event->text(),
-                'status' => $event->status(),
-                'date' => $event->date(),
+                'todoId' => (string) $event->todoId(),
+                'text' => (string) $event->text(),
+                'status' => (string) $event->status(),
+                'date' => (string) $event->date(),
             ]
         );
 
@@ -72,7 +72,7 @@ class RedisTodoProjection implements TodoProjection
         $this->predis->hset(
             $this->computeHashFor($event->getAggregateId()),
             'status',
-            $event->newStatus()
+            (string) $event->newStatus()
         );
     }
 
@@ -81,7 +81,7 @@ class RedisTodoProjection implements TodoProjection
         $this->predis->hset(
             $this->computeHashFor($event->getAggregateId()),
             'status',
-            $event->newStatus()
+            (string) $event->newStatus()
         );
     }
 
@@ -90,7 +90,7 @@ class RedisTodoProjection implements TodoProjection
         $this->predis->hset(
             $this->computeHashFor($event->getAggregateId()),
             'status',
-            $event->newStatus()
+            (string) $event->newStatus()
         );
     }
 
@@ -99,8 +99,8 @@ class RedisTodoProjection implements TodoProjection
         return 'project' . \implode(\array_slice(\explode('\\', \get_class($event)), -1));
     }
 
-    protected function computeHashFor($anAggregateId): string
+    protected function computeHashFor($aggregateId): string
     {
-        return sprintf('todo:%s', $anAggregateId);
+        return sprintf('todo:%s', $aggregateId);
     }
 }

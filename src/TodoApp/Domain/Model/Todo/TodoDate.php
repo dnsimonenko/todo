@@ -12,6 +12,11 @@ final class TodoDate
         return new self($date);
     }
 
+    public function __toString(): string
+    {
+        return $this->date->format(DATE_ATOM);
+    }
+
     private function __construct(string $date)
     {
         $this->date = new \DateTimeImmutable($date, new \DateTimeZone('UTC'));

@@ -26,19 +26,11 @@ final class Todo extends AggregateRoot
     /** @var TodoDate */
     private $date;
 
-    private function __construct()
-    {
-    }
-
     public static function post(TodoId $todoId, TodoText $text, TodoStatus $status, TodoDate $date): Todo
     {
         $self = new self();
-        $self->todoId = $todoId;
-        $self->text = $text;
-        $self->status = $status;
-        $self->date = $date;
 
-        $self->recordThat(new TodoPosted($todoId, $text, $status, $date));
+        $self->applyAndRecordThat(new TodoPosted($todoId, $text, $status, $date));
 
         return $self;
     }

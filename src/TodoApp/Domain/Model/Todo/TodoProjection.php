@@ -1,6 +1,6 @@
-<?php
+<?php declare(strict_types=1);
 
-namespace CQRSBlog\BlogEngine\DomainModel;
+namespace TodoApp\Domain\Model\Todo;
 
 use TodoApp\Domain\Model\Projection;
 use TodoApp\Domain\Model\Todo\Event\TodoClosed;
