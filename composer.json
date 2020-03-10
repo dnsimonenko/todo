@@ -39,7 +39,8 @@
     "require-dev": {
         "phpunit/phpunit": "@stable",
         "behat/behat": "^3.6",
-        "behat/symfony2-extension": "^2.1"
+        "behat/symfony2-extension": "^2.1",
+        "symfony/expression-language": "4.4.*"
     },
     "config": {
         "bin-dir": "bin"

@@ -1,0 +1,11 @@
+TodoApp\Domain\Model\Todo\TodoView:
+  exclusion_policy: ALL
+  properties:
+    todoId:
+      type: string
+    text:
+      type: string
+    status:
+      type: string
+    date:
+      type: string

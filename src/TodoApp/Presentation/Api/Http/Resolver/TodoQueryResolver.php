@@ -5,25 +5,25 @@ namespace TodoApp\Presentation\Api\Http\Resolver;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
-use TodoApp\Domain\Model\Todo\Command\CloseTodo;
+use TodoApp\Application\Query\TodoQuery;
 use TodoApp\Domain\Model\Todo\TodoId;
 
-class CloseTodoCommandResolver implements ArgumentValueResolverInterface
+class TodoQueryResolver implements ArgumentValueResolverInterface
 {
     public function supports(Request $request, ArgumentMetadata $argument)
     {
-        return CloseTodo::class === $argument->getType();
+        return TodoQuery::class === $argument->getType();
     }
 
     public function resolve(Request $request, ArgumentMetadata $argument)
     {
         $id = $request->attributes->get('todoId');
         if ($id instanceof TodoId) {
-            $command = new CloseTodo($id);
+            $query = new TodoQuery((string) $id);
         } else {
-            $command = new CloseTodo(TodoId::fromString($id));
+            $query = new TodoQuery($id);
         }
 
-        yield $command;
+        yield $query;
     }
 }

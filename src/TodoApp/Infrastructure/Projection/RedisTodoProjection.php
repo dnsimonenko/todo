@@ -64,7 +64,7 @@ class RedisTodoProjection implements TodoProjection
             ]
         );
 
-        $this->predis->rpush('posts', $hash);
+        $this->predis->rpush('todo', $hash);
     }
 
     public function projectTodoMarkedAsDone(TodoMarkedAsDone $event): void
@@ -87,11 +87,7 @@ class RedisTodoProjection implements TodoProjection
 
     public function projectTodoClosed(TodoClosed $event): void
     {
-        $this->predis->hset(
-            $this->computeHashFor($event->getAggregateId()),
-            'status',
-            (string) $event->newStatus()
-        );
+        $this->predis->del($this->computeHashFor($event->getAggregateId()));
     }
 
     protected function determineProjectHandlerMethodFor(DomainEvent $event): string

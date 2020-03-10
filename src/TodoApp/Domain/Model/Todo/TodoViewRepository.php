@@ -4,7 +4,7 @@ namespace TodoApp\Domain\Model\Todo;
 
 interface TodoViewRepository
 {
-    public function get($id);
+    public function get(string $id): TodoView;
 
-    public function all();
+    public function all(): array;
 }

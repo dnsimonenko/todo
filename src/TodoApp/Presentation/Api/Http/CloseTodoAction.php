@@ -6,11 +6,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use TodoApp\Domain\Model\Todo\Command\CloseTodo;
-use TodoApp\Domain\Model\Todo\Command\MarkTodoAsDone;
-use TodoApp\Domain\Model\Todo\Command\ReopenTodo;
 use TodoApp\Domain\Model\Todo\CommandHandler\CloseTodoHandler;
-use TodoApp\Domain\Model\Todo\CommandHandler\MarkTodoAsDoneHandler;
-use TodoApp\Domain\Model\Todo\CommandHandler\ReopenTodoHandler;
 use TodoApp\Domain\Model\Todo\TodoId;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 

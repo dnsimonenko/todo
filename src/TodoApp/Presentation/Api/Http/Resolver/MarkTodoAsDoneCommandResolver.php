@@ -7,7 +7,6 @@ use Symfony\Component\HttpKernel\Controller\ArgumentValueResolverInterface;
 use Symfony\Component\HttpKernel\ControllerMetadata\ArgumentMetadata;
 use TodoApp\Domain\Model\Todo\Command\MarkTodoAsDone;
 use TodoApp\Domain\Model\Todo\TodoId;
-use TodoApp\Domain\Model\Todo\TodoStatus;
 
 class MarkTodoAsDoneCommandResolver implements ArgumentValueResolverInterface
 {

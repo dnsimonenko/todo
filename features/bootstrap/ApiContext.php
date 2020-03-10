@@ -227,7 +227,7 @@ class ApiContext implements KernelAwareContext
      *
      * @return mixed
      */
-    protected function retrieveData(string $name = null)
+    protected function retrieveData()
     {
         $data = @json_decode($this->response->getContent(), true);
 
@@ -235,25 +235,6 @@ class ApiContext implements KernelAwareContext
             ($data !== null && json_last_error() === JSON_ERROR_NONE),
             'The response json is not formatted correctly. (1): ' . $this->response->getContent()
         );
-
-        if ($name) {
-            Assertions::assertArrayHasKey(
-                $name,
-                $data,
-                'Response does not contain required attribute "' . $name . '"'
-            );
-
-            if (!array_key_exists($name, $data)) {
-                $language = new \Symfony\Component\ExpressionLanguage\ExpressionLanguage();
-                try {
-                    return $language->evaluate($name, $data);
-                } catch (\Symfony\Component\ExpressionLanguage\SyntaxError $e) {
-                    throw new \InvalidArgumentException(sprintf('Key %s does not exists in array with keys %s', $name, implode(', ', array_keys($data))));
-                }
-            }
-
-            return $data[$name];
-        }
 
         return $data;
     }
